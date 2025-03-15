@@ -1,11 +1,25 @@
 const express = require("express");
 const path = require("path");
+const cors = require('cors');
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const app = express();
 const port = 5000;
 const Score = require("./models/highscore");
 
+//running into cors issue trying to fix
+const corsOptions = {
+    origin: "http://localhost:5000", 
+    methods: "GET,POST",
+    allowedHeaders: "Content-Type,Authorization"
+};
+
+app.use(cors(corsOptions));
+
+app.get('/api/data', (req, res) => {
+    res.json({ message: "CORS is enabled!" });
+});
+  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname)));
@@ -13,6 +27,7 @@ app.use(express.static(path.join(__dirname)));
 const mongoURI = "mongodb://localhost:27017/scores";
 mongoose.connect(mongoURI);
 const db = mongoose.connection;
+
 
 db.on("error", console.error.bind(console, "MongoDB connection error"));
 db.once("open", ()=>{
